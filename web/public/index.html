@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEDOX Browser — The Fast, Private & Ad-Free Web Browser</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+      <span>ZEDOX Browser</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#demo">Live Demo</a>
+      <a href="#features">Features</a>
+      <a href="#comparison">Compare</a>
+      <a href="/download" class="nav-cta-btn">Download .exe</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="pill-badge">
+      <span class="pulse-dot"></span> 100% Ephemeral • Zero Disk Footprint
+    </div>
+    <h1 class="hero-title">Experience the Web with <br><span class="gradient-text">ZEDOX Browser</span></h1>
+    <p class="hero-desc">
+      Stop letting websites track your clicks, harvest your cookies, and log your search history.
+      ZEDOX Browser runs in pure RAM with integrated ad, video ad, and tracker blocking.
+    </p>
+    <div class="hero-actions">
+      <a href="/download" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+        Download for Windows (.exe)
+      </a>
+      <a href="#demo" class="btn btn-secondary">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        Try Live Web Demo
+      </a>
+    </div>
+  </section>
+
+  <!-- Interactive Live Browser Demo -->
+  <section class="demo-section" id="demo">
+    <div class="section-header">
+      <h2>Interactive Live Web Demo</h2>
+      <p>Test ZEDOX privacy filtering right now in your current browser — no installation required.</p>
+    </div>
+
+    <div class="browser-mockup">
+      <div class="mockup-header">
+        <div class="window-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="mockup-url-bar">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="#10b981"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          <input type="text" id="demo-url-input" value="https://en.wikipedia.org/wiki/Web_browser" placeholder="Enter any URL (e.g. en.wikipedia.org)">
+          <button id="demo-go-btn" class="demo-btn">Browse Privately</button>
+        </div>
+        <div class="mockup-shield-pill">
+          <span>⚡ ZEDOX Shield: Active</span>
+        </div>
+      </div>
+
+      <div class="demo-suggestions">
+        <span>Try sample sites:</span>
+        <button class="sample-tag" data-url="https://en.wikipedia.org/wiki/Privacy">Wikipedia (Privacy)</button>
+        <button class="sample-tag" data-url="https://example.com">Example.com</button>
+        <button class="sample-tag" data-url="https://news.ycombinator.com">Hacker News</button>
+      </div>
+
+      <div class="mockup-viewport">
+        <iframe id="demo-frame" src="/api/proxy?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWeb_browser" frameborder="0"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="section-header">
+      <h2>Engineered for Uncompromising Privacy</h2>
+      <p>How ZEDOX Browser keeps your identity and activity completely invisible.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="card-icon">🚫</div>
+        <h3>Zero History on Disk</h3>
+        <p>Unlike standard browsers that log every search and website visit into local databases, ZEDOX operates entirely in RAM. Nothing touches your drive.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-icon">🍪</div>
+        <h3>Ephemeral Memory Cookies</h3>
+        <p>Cookies exist only in RAM while the tab remains open. Close the tab or browser, and all session state is erased forever.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-icon">⚡</div>
+        <h3>EasyList Ad Blocking</h3>
+        <p>Pre-packaged with EasyList & EasyPrivacy rules that automatically intercept and block tracking beacons, banners, and video ads before they load.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-icon">🛡️</div>
+        <h3>GPC & Anti-Fingerprint</h3>
+        <p>Enforces Global Privacy Control (GPC) and Do Not Track (DNT) headers on every request, keeping your digital footprint untraceable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="comparison-section" id="comparison">
+    <div class="section-header">
+      <h2>How ZEDOX Compares</h2>
+      <p>Why standard browsers and normal "Incognito" modes aren't enough.</p>
+    </div>
+
+    <div class="table-container">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th class="highlight-col">ZEDOX Browser</th>
+            <th>Standard Chrome</th>
+            <th>Chrome Incognito</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Automatic Ad & Video Ad Blocking</td>
+            <td class="highlight-col status-yes">✓ Built-in</td>
+            <td class="status-no">✗ None</td>
+            <td class="status-no">✗ None</td>
+          </tr>
+          <tr>
+            <td>Tracker & Analytics Script Blocker</td>
+            <td class="highlight-col status-yes">✓ Built-in</td>
+            <td class="status-no">✗ None</td>
+            <td class="status-no">✗ Partial</td>
+          </tr>
+          <tr>
+            <td>Zero History Ever Written to Disk</td>
+            <td class="highlight-col status-yes">✓ Always Active</td>
+            <td class="status-no">✗ Logs everything</td>
+            <td class="status-yes">✓ Session only</td>
+          </tr>
+          <tr>
+            <td>One-Click Panic Wipe Button</td>
+            <td class="highlight-col status-yes">✓ Instant Nuke</td>
+            <td class="status-no">✗ Manual settings</td>
+            <td class="status-no">✗ None</td>
+          </tr>
+          <tr>
+            <td>Stripped Referrer Headers</td>
+            <td class="highlight-col status-yes">✓ Enabled</td>
+            <td class="status-no">✗ Leaked</td>
+            <td class="status-no">✗ Leaked</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        <span>ZEDOX Browser</span>
+      </div>
+      <p>Open source privacy architecture created by <strong>Yug Solanki</strong>. Build your own version or deploy to your personal domain.</p>
+      <div class="copyright">© 2026 ZEDOX Browser Project • Created by Yug Solanki. Released under MIT License.</div>
+    </div>
+  </footer>
+
+  <script src="client.js"></script>
+</body>
+</html>
