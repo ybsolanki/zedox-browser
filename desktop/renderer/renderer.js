@@ -185,6 +185,16 @@ function updateStartScreenTime(startScreen) {
   dateEl.textContent = now.toLocaleDateString('en-US', options);
 }
 
+function resetTabToHome(tab) {
+  if (!tab) return;
+  tab.url = 'about:blank';
+  tab.title = 'New Tab';
+  tab.tabEl.querySelector('.tab-title').textContent = 'New Tab';
+  tab.tabEl.querySelector('.tab-icon').innerHTML = SVG_GLOBE;
+  tab.webview.loadURL('about:blank');
+  tab.startScreen.classList.remove('hidden');
+}
+
 function createTab(initialUrl = 'about:blank') {
   tabCounter++;
   const tabId = `tab-${tabCounter}`;
@@ -206,7 +216,7 @@ function createTab(initialUrl = 'about:blank') {
   const initialTitle = isAboutPage ? 'About ZEDOX' : 'New Tab';
   const initialIcon = isAboutPage ? SVG_BOLT : SVG_GLOBE;
 
-  // Create Tab DOM Element with clean SVG Icon
+  // Create Tab DOM Element
   const tabEl = document.createElement('div');
   tabEl.className = 'tab';
   tabEl.id = `tab-el-${tabId}`;
@@ -216,7 +226,7 @@ function createTab(initialUrl = 'about:blank') {
     <span class="tab-close" title="Close Tab">×</span>
   `;
 
-  // Start Screen overlay with vector brand logos
+  // Start Screen overlay
   const startScreen = document.createElement('div');
   startScreen.className = 'new-tab-screen';
   if (isAboutPage) startScreen.classList.add('hidden');
@@ -261,7 +271,7 @@ function createTab(initialUrl = 'about:blank') {
         <span>Saved: <strong class="stat-value stat-data-saved">0 MB</strong></span>
       </div>
       <div class="stat-item">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="#10b981"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z"/></svg>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="#10b981"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2z"/></svg>
         <span class="stat-value">RAM-Only Isolation</span>
       </div>
     </div>
@@ -291,6 +301,13 @@ function createTab(initialUrl = 'about:blank') {
   });
 
   webview.addEventListener('page-title-updated', (e) => {
+    if (tabObj.url === 'about:blank') {
+      tabObj.title = 'New Tab';
+      tabEl.querySelector('.tab-title').textContent = 'New Tab';
+      tabEl.querySelector('.tab-icon').innerHTML = SVG_GLOBE;
+      return;
+    }
+
     tabObj.title = e.title;
     tabEl.querySelector('.tab-title').textContent = e.title;
 
@@ -325,6 +342,10 @@ function createTab(initialUrl = 'about:blank') {
     if (e.url !== 'about:blank') {
       startScreen.classList.add('hidden');
     } else {
+      // Cleanly reset tab title and icon when navigating back to blank/home
+      tabObj.title = 'New Tab';
+      tabEl.querySelector('.tab-title').textContent = 'New Tab';
+      tabEl.querySelector('.tab-icon').innerHTML = SVG_GLOBE;
       startScreen.classList.remove('hidden');
     }
     if (activeTabId === tabId) {
@@ -463,12 +484,8 @@ btnReload.addEventListener('click', () => {
 btnHome.addEventListener('click', () => {
   const tab = getActiveTab();
   if (tab) {
-    tab.url = 'about:blank';
-    tab.webview.loadURL('about:blank');
-    tab.startScreen.classList.remove('hidden');
+    resetTabToHome(tab);
     urlInput.value = '';
-    tab.tabEl.querySelector('.tab-title').textContent = 'New Tab';
-    tab.tabEl.querySelector('.tab-icon').innerHTML = SVG_GLOBE;
   }
 });
 
@@ -529,24 +546,34 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Panic Button
+// Panic Button: Complete wipe of sessions and resets all tabs
 async function nukeSession() {
   if (confirm('ZEDOX Panic Wipe: Destroy all session memory, cookies, and cache now?')) {
     if (window.shieldAPI) {
       await window.shieldAPI.clearData();
     }
+
+    // Close all open tabs except the first one
+    while (tabs.length > 1) {
+      closeTab(tabs[tabs.length - 1].id);
+    }
+
+    // Reset remaining tab cleanly to New Tab
+    const remainingTab = tabs[0];
+    if (remainingTab) {
+      resetTabToHome(remainingTab);
+    }
+
     totalBlocked = 0;
     shieldCountSpan.textContent = '0';
     popoverShieldCount.textContent = '0';
     popoverDataSaved.textContent = '0 MB';
     shieldPopover.classList.add('hidden');
+    urlInput.value = '';
 
-    const tab = getActiveTab();
-    if (tab) {
-      tab.webview.loadURL('about:blank');
-      tab.startScreen.classList.remove('hidden');
-      urlInput.value = '';
-    }
+    document.querySelectorAll('.stat-ads-blocked').forEach(el => el.textContent = '0');
+    document.querySelectorAll('.stat-data-saved').forEach(el => el.textContent = '0 MB');
+
     alert('ZEDOX: Ephemeral session erased. Zero trace remaining.');
   }
 }
