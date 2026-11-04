@@ -425,6 +425,166 @@ body {
 
 @media (max-width: 768px) {
   .hero-title { font-size: 36px; }
-  .mockup-viewport { height: 380px; }
-  .navbar { padding: 0 20px; }
+  .mockup-viewport { height: 480px; }
+  .navbar { padding: 0 16px; }
+  .nav-links a:not(.nav-cta-btn) { display: none; }
+  .hero { padding: 50px 16px 40px; }
+  .hero-actions { flex-direction: column; width: 100%; max-width: 340px; margin: 0 auto; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .demo-suggestions { gap: 6px; }
+  .mockup-header { padding: 10px 12px; gap: 8px; }
+  .mockup-shield-pill { display: none; }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Mobile PWA Install Banner */
+.pwa-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  max-width: 440px;
+  margin: 0 auto;
+  background: rgba(13, 19, 34, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(0, 242, 254, 0.15);
+  z-index: 9999;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.pwa-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pwa-banner-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+.pwa-banner-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.pwa-banner-text strong {
+  font-size: 14px;
+  color: #f8fafc;
+}
+
+.pwa-banner-text span {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.pwa-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-btn-primary {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  color: #070a13;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.pwa-btn-primary:hover {
+  transform: scale(1.04);
+}
+
+.pwa-btn-close {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.pwa-btn-close:hover {
+  color: #cbd5e1;
+}
+
+/* iOS Safari Tooltip */
+.ios-tooltip {
+  position: fixed;
+  bottom: 24px;
+  left: 20px;
+  right: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #cbd5e1;
+  z-index: 9999;
+}
+
+.ios-tooltip button {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+/* Hero Mobile Install Button */
+.btn-mobile-install {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.25);
+  cursor: pointer;
+}
+
+.btn-mobile-install:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(16, 185, 129, 0.4);
+}
+
+.nav-pwa-btn {
+  background: rgba(0, 242, 254, 0.15);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: #00f2fe;
+  padding: 7px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.nav-pwa-btn:hover {
+  background: rgba(0, 242, 254, 0.25);
 }

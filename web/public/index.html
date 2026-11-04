@@ -2,8 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>ZEDOX Browser — The Fast, Private & Ad-Free Web Browser</title>
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#070a13">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ZEDOX">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,9 +28,31 @@
       <a href="#demo">Live Demo</a>
       <a href="#features">Features</a>
       <a href="#comparison">Compare</a>
+      <button id="nav-install-btn" class="nav-pwa-btn hidden">Install App</button>
       <a href="https://github.com/ybsolanki/zedox-browser/releases/download/v1.0.0/ZEDOX.Browser.Setup.1.0.0.exe" class="nav-cta-btn">Download .exe</a>
     </nav>
   </header>
+
+  <!-- Mobile PWA Installation Banner (Floats on mobile screens) -->
+  <div id="pwa-install-banner" class="pwa-banner hidden">
+    <div class="pwa-banner-content">
+      <img src="/icons/icon-192.png" alt="ZEDOX Logo" class="pwa-banner-icon">
+      <div class="pwa-banner-text">
+        <strong>Install ZEDOX on Phone</strong>
+        <span>Zero tracking, ad-free mobile browsing</span>
+      </div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button id="pwa-install-btn" class="pwa-btn-primary">Install</button>
+      <button id="pwa-close-btn" class="pwa-btn-close">✕</button>
+    </div>
+  </div>
+
+  <!-- iOS Safari Install Tooltip -->
+  <div id="ios-install-tooltip" class="ios-tooltip hidden">
+    <span>To install on iPhone: Tap <strong>Share</strong> <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="display:inline-block; vertical-align:middle;"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"/></svg> then <strong>Add to Home Screen</strong>.</span>
+    <button id="ios-tooltip-close">✕</button>
+  </div>
 
   <!-- Hero Section -->
   <section class="hero">
@@ -29,13 +62,17 @@
     <h1 class="hero-title">Experience the Web with <br><span class="gradient-text">ZEDOX Browser</span></h1>
     <p class="hero-desc">
       Stop letting websites track your clicks, harvest your cookies, and log your search history.
-      ZEDOX Browser runs in pure RAM with integrated ad, video ad, and tracker blocking.
+      ZEDOX Browser runs in pure RAM with integrated ad, video ad, and tracker blocking. Available on Windows PC & Mobile Phones.
     </p>
     <div class="hero-actions">
       <a href="https://github.com/ybsolanki/zedox-browser/releases/download/v1.0.0/ZEDOX.Browser.Setup.1.0.0.exe" class="btn btn-primary">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
         Download for Windows (.exe)
       </a>
+      <button id="hero-mobile-btn" class="btn btn-mobile-install hidden">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+        Install Mobile App
+      </button>
       <a href="#demo" class="btn btn-secondary">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
         Try Live Web Demo
@@ -84,7 +121,7 @@
   <section class="features-section" id="features">
     <div class="section-header">
       <h2>Engineered for Uncompromising Privacy</h2>
-      <p>How ZEDOX Browser keeps your identity and activity completely invisible.</p>
+      <p>How ZEDOX Browser keeps your identity and activity completely invisible on Desktop & Mobile.</p>
     </div>
 
     <div class="features-grid">
@@ -174,7 +211,7 @@
         <svg class="logo-icon" viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
         <span>ZEDOX Browser</span>
       </div>
-      <p>Open source privacy architecture created by <strong>Yug Solanki</strong>. Build your own version or deploy to your personal domain.</p>
+      <p>Open source privacy architecture created by <strong>Yug Solanki</strong>. Available for PC & Mobile.</p>
       <div class="copyright">© 2026 ZEDOX Browser Project • Created by Yug Solanki. Released under MIT License.</div>
     </div>
   </footer>
