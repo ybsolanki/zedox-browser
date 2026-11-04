@@ -77,6 +77,7 @@ async function createWindow() {
     minWidth: 800,
     minHeight: 600,
     title: 'ZEDOX Browser',
+    icon: path.join(__dirname, 'build', 'icon.png'),
     titleBarStyle: 'hidden',
     titleBarOverlay: {
       color: '#0f172a',

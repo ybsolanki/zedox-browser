@@ -41,11 +41,14 @@
       margin-bottom: 48px;
     }
 
-    .brand-logo-glow {
-      width: 72px;
-      height: 72px;
+    .brand-logo-img {
+      width: 84px;
+      height: 84px;
+      border-radius: 20px;
       margin-bottom: 18px;
-      filter: drop-shadow(0 0 24px rgba(0, 242, 254, 0.45));
+      box-shadow: 0 0 35px rgba(0, 242, 254, 0.45);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      object-fit: cover;
     }
 
     .browser-title {
@@ -287,15 +290,7 @@
   <div class="container">
     <!-- Brand Hero -->
     <div class="brand-hero">
-      <svg class="brand-logo-glow" viewBox="0 0 24 24" fill="url(#heroGrad)">
-        <defs>
-          <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#00f2fe" />
-            <stop offset="100%" stop-color="#4facfe" />
-          </linearGradient>
-        </defs>
-        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-      </svg>
+      <img src="assets/logo.png" class="brand-logo-img" alt="ZEDOX Official Logo">
       <h1 class="browser-title">ZEDOX Browser</h1>
       <p class="browser-tagline">
         Engineered with a memory-isolated execution engine. Zero search history written to disk, self-destructing sessions, and hardware-accelerated ad stripping.

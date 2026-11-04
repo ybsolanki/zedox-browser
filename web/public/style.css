@@ -36,6 +36,14 @@ body {
   color: #f8fafc;
 }
 
+.logo-img {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  object-fit: cover;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+}
+
 .logo-icon {
   width: 28px;
   height: 28px;
