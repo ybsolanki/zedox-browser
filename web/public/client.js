@@ -1,51 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Service Worker Registration for PWA
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then((reg) => console.log('ZEDOX PWA Service Worker registered:', reg.scope))
-        .catch((err) => console.log('SW registration failed:', err));
-    });
-  }
-
-  // 2. View Mode Detection (Mobile Browser vs Desktop Landing)
-  const urlParams = new URLSearchParams(window.location.search);
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 800;
-  const forceBrowser = urlParams.get('mode') === 'browser' || urlParams.get('app') === '1' || urlParams.get('pwa') === 'true';
-  const forceLanding = urlParams.get('mode') === 'landing';
-
-  function setViewMode(mode) {
-    if (mode === 'browser') {
-      document.body.className = 'view-browser';
-      if (floatingBrowserBtn) floatingBrowserBtn.classList.add('hidden');
-    } else {
-      document.body.className = 'view-landing';
-      if (isMobileDevice && floatingBrowserBtn) {
-        floatingBrowserBtn.classList.remove('hidden');
-      }
-    }
-  }
-
-  // Default: mobile devices, standalone PWA, or explicit browser mode load the Mobile Browser directly!
-  if ((isMobileDevice || isStandalone || forceBrowser) && !forceLanding) {
-    setViewMode('browser');
-  } else {
-    setViewMode('landing');
-  }
-
-  // Landing view triggers to launch browser
+  // ==============================================================
+  // 1. ALL DOM ELEMENT SELECTORS (HOISTED FIRST TO PREVENT TDZ)
+  // ==============================================================
+  // View toggle buttons
   const navLaunchBrowserBtn = document.getElementById('nav-launch-browser-btn');
   const heroLaunchBrowserBtn = document.getElementById('hero-launch-browser-btn');
   const floatingBrowserBtn = document.getElementById('floating-browser-btn');
 
-  if (navLaunchBrowserBtn) navLaunchBrowserBtn.addEventListener('click', () => setViewMode('browser'));
-  if (heroLaunchBrowserBtn) heroLaunchBrowserBtn.addEventListener('click', () => setViewMode('browser'));
-  if (floatingBrowserBtn) floatingBrowserBtn.addEventListener('click', () => setViewMode('browser'));
-
-  // ==============================================================
-  // 3. FULLSCREEN MOBILE BROWSER ENGINE
-  // ==============================================================
+  // Mobile browser components
   const mbUrlInput = document.getElementById('mb-url-input');
   const mbBtnClear = document.getElementById('mb-btn-clear');
   const mbBtnGo = document.getElementById('mb-btn-go');
@@ -54,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mbLoadingBar = document.getElementById('mb-loading-bar');
   const mbStartPage = document.getElementById('mb-start-page');
   const mbWebviewWrapper = document.getElementById('mb-webview-wrapper');
+  const mbWebviewLoader = document.getElementById('mb-webview-loader');
   const mbWebview = document.getElementById('mb-webview');
   const mbNavBack = document.getElementById('mb-nav-back');
   const mbNavForward = document.getElementById('mb-nav-forward');
@@ -75,13 +38,71 @@ document.addEventListener('DOMContentLoaded', () => {
   const mbMenuLanding = document.getElementById('mb-menu-landing');
   const mbMenuAbout = document.getElementById('mb-menu-about');
   const mbToast = document.getElementById('mb-toast');
+  const mbToastText = document.getElementById('mb-toast-text');
 
+  // PWA elements
+  const pwaBanner = document.getElementById('pwa-install-banner');
+  const pwaInstallBtn = document.getElementById('pwa-install-btn');
+  const pwaCloseBtn = document.getElementById('pwa-close-btn');
+  const heroMobileBtn = document.getElementById('hero-mobile-btn');
+  const navInstallBtn = document.getElementById('nav-install-btn');
+  const iosTooltip = document.getElementById('ios-install-tooltip');
+  const iosCloseBtn = document.getElementById('ios-tooltip-close');
+
+  // ==============================================================
+  // 2. SERVICE WORKER REGISTRATION FOR PWA
+  // ==============================================================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('ZEDOX PWA Service Worker registered:', reg.scope))
+        .catch((err) => console.log('SW registration failed:', err));
+    });
+  }
+
+  // ==============================================================
+  // 3. VIEW MODE DETECTION (MOBILE BROWSER VS LANDING VIEW)
+  // ==============================================================
+  const urlParams = new URLSearchParams(window.location.search);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth <= 800;
+  const forceBrowser = urlParams.get('mode') === 'browser' || urlParams.get('app') === '1' || urlParams.get('pwa') === 'true';
+  const forceLanding = urlParams.get('mode') === 'landing';
+
+  function setViewMode(mode) {
+    if (mode === 'browser') {
+      document.body.className = 'view-browser';
+      if (floatingBrowserBtn) floatingBrowserBtn.classList.add('hidden');
+    } else {
+      document.body.className = 'view-landing';
+      if (isMobileDevice && floatingBrowserBtn) {
+        floatingBrowserBtn.classList.remove('hidden');
+      }
+    }
+  }
+
+  // Mobile devices, standalone PWA, or explicit browser mode load the Mobile Browser directly!
+  if ((isMobileDevice || isStandalone || forceBrowser) && !forceLanding) {
+    setViewMode('browser');
+  } else {
+    setViewMode('landing');
+  }
+
+  if (navLaunchBrowserBtn) navLaunchBrowserBtn.addEventListener('click', () => setViewMode('browser'));
+  if (heroLaunchBrowserBtn) heroLaunchBrowserBtn.addEventListener('click', () => setViewMode('browser'));
+  if (floatingBrowserBtn) floatingBrowserBtn.addEventListener('click', () => setViewMode('browser'));
+
+  // ==============================================================
+  // 4. FULLSCREEN MOBILE BROWSER ENGINE
+  // ==============================================================
   let totalBlocked = 0;
   let toastTimer = null;
 
   function showToast(text) {
     if (!mbToast) return;
-    mbToast.querySelector('span').textContent = text;
+    if (mbToastText) {
+      mbToastText.textContent = text;
+    }
     mbToast.classList.remove('hidden');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
@@ -89,27 +110,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
-  // Navigation logic
+  // Navigation Logic
   function navigate(input) {
     let query = (input || '').trim();
+    if (!query) {
+      if (mbStartSearchInput && mbStartSearchInput.value.trim()) {
+        query = mbStartSearchInput.value.trim();
+      } else if (mbUrlInput && mbUrlInput.value.trim()) {
+        query = mbUrlInput.value.trim();
+      }
+    }
     if (!query) return;
 
-    // Show loading bar
+    // Show loading bar and loader spinner
     if (mbLoadingBar) {
       mbLoadingBar.className = 'mb-loading-bar active';
+    }
+    if (mbWebviewLoader) {
+      mbWebviewLoader.classList.remove('hidden');
     }
 
     // Switch view to active webview
     if (mbStartPage) mbStartPage.classList.add('hidden');
     if (mbWebviewWrapper) mbWebviewWrapper.classList.remove('hidden');
 
-    // Update input display
+    // Update input display and clear button
     if (mbUrlInput) {
       mbUrlInput.value = query;
       if (mbBtnClear) mbBtnClear.classList.remove('hidden');
     }
+    if (mbStartSearchInput) {
+      mbStartSearchInput.value = query;
+    }
 
-    // Trigger proxy
+    // Trigger proxy navigation
     const proxyUrl = `/api/proxy?url=${encodeURIComponent(query)}`;
     if (mbWebview) {
       mbWebview.src = proxyUrl;
@@ -120,12 +154,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Go to Home / Start Page
   function goHome() {
+    if (mbWebviewLoader) mbWebviewLoader.classList.add('hidden');
     if (mbWebview) mbWebview.src = 'about:blank';
     if (mbWebviewWrapper) mbWebviewWrapper.classList.add('hidden');
     if (mbStartPage) mbStartPage.classList.remove('hidden');
     if (mbUrlInput) {
       mbUrlInput.value = '';
       if (mbBtnClear) mbBtnClear.classList.add('hidden');
+    }
+    if (mbStartSearchInput) {
+      mbStartSearchInput.value = '';
     }
     if (mbLoadingBar) mbLoadingBar.className = 'mb-loading-bar';
     if (mbNavBack) mbNavBack.disabled = true;
@@ -142,12 +180,15 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.clear();
       localStorage.clear();
     } catch (e) {}
-    showToast('🔥 Session Purged! Pure RAM reset. Zero traces remaining.');
+    showToast('Session Purged. Pure RAM reset — zero traces remaining.');
   }
 
-  // Event Listeners for Top Omnibar
+  // Omnibar Input & Buttons
   if (mbBtnGo) {
-    mbBtnGo.addEventListener('click', () => navigate(mbUrlInput.value));
+    mbBtnGo.addEventListener('click', () => {
+      const q = (mbUrlInput ? mbUrlInput.value : '') || (mbStartSearchInput ? mbStartSearchInput.value : '');
+      navigate(q);
+    });
   }
 
   if (mbUrlInput) {
@@ -173,14 +214,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Start Page Search
+  // Start Page Search Input & Button
   if (mbStartSearchBtn) {
-    mbStartSearchBtn.addEventListener('click', () => navigate(mbStartSearchInput.value));
+    mbStartSearchBtn.addEventListener('click', () => {
+      const q = (mbStartSearchInput ? mbStartSearchInput.value : '') || (mbUrlInput ? mbUrlInput.value : '');
+      navigate(q);
+    });
   }
 
   if (mbStartSearchInput) {
     mbStartSearchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') navigate(mbStartSearchInput.value);
+    });
+    mbStartSearchInput.addEventListener('input', () => {
+      if (mbUrlInput) mbUrlInput.value = mbStartSearchInput.value;
     });
   }
 
@@ -220,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Shield Sheet
+  // Shield Sheet Popover
   if (mbBtnShield) {
     mbBtnShield.addEventListener('click', () => {
       if (mbShieldSheet) mbShieldSheet.classList.remove('hidden');
@@ -239,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Menu Sheet
+  // Menu Sheet Popover
   if (mbNavMenu) {
     mbNavMenu.addEventListener('click', () => {
       if (mbMenuSheet) mbMenuSheet.classList.remove('hidden');
@@ -263,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mbMenuSheet) mbMenuSheet.classList.add('hidden');
       if (mbWebview && mbWebview.src && mbWebview.src !== 'about:blank') {
         if (mbLoadingBar) mbLoadingBar.className = 'mb-loading-bar active';
+        if (mbWebviewLoader) mbWebviewLoader.classList.remove('hidden');
         mbWebview.src = mbWebview.src;
       }
     });
@@ -274,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const current = mbUrlInput ? mbUrlInput.value : '';
       if (current) {
         navigator.clipboard.writeText(current)
-          .then(() => showToast('📋 URL copied to clipboard'))
+          .then(() => showToast('URL copied to clipboard.'))
           .catch(() => showToast('URL: ' + current));
       }
     });
@@ -290,13 +338,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mbMenuAbout) {
     mbMenuAbout.addEventListener('click', () => {
       if (mbMenuSheet) mbMenuSheet.classList.add('hidden');
-      showToast('🛡️ ZEDOX Browser: Privacy-first architecture created by Yug Solanki.');
+      showToast('ZEDOX Browser: Privacy-first architecture created by Yug Solanki.');
     });
   }
 
   // Cross-frame messaging from proxy to sync loaded URL and tracker count
   window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'ZEDOX_PAGE_LOADED') {
+      if (mbWebviewLoader) mbWebviewLoader.classList.add('hidden');
       if (e.data.url && mbUrlInput) {
         mbUrlInput.value = e.data.url;
         if (mbBtnClear) mbBtnClear.classList.remove('hidden');
@@ -319,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle iframe load completion
   if (mbWebview) {
     mbWebview.addEventListener('load', () => {
+      if (mbWebviewLoader) mbWebviewLoader.classList.add('hidden');
       if (mbLoadingBar && mbLoadingBar.classList.contains('active')) {
         mbLoadingBar.className = 'mb-loading-bar done';
         setTimeout(() => {
@@ -329,26 +379,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==============================================================
-  // 4. PWA INSTALL PROMPT & SERVICE WORKER
+  // 5. PWA INSTALL PROMPT HANDLERS
   // ==============================================================
   let deferredPrompt = null;
-  const pwaBanner = document.getElementById('pwa-install-banner');
-  const pwaInstallBtn = document.getElementById('pwa-install-btn');
-  const pwaCloseBtn = document.getElementById('pwa-close-btn');
-  const heroMobileBtn = document.getElementById('hero-mobile-btn');
-  const navInstallBtn = document.getElementById('nav-install-btn');
-  const iosTooltip = document.getElementById('ios-install-tooltip');
-  const iosCloseBtn = document.getElementById('ios-tooltip-close');
-
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-  // If running as installed standalone app, hide install prompts
   if (isStandalone) {
     if (pwaBanner) pwaBanner.classList.add('hidden');
     if (heroMobileBtn) heroMobileBtn.classList.add('hidden');
     if (navInstallBtn) navInstallBtn.classList.add('hidden');
   } else {
-    // Android & Chrome/Edge beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;

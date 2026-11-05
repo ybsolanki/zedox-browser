@@ -345,8 +345,15 @@ body {
 }
 
 .card-icon {
-  font-size: 30px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .feature-card h3 {
@@ -825,10 +832,13 @@ body.view-landing .landing-page-view {
 .badge-pill {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 3px 10px;
+  padding: 4px 10px;
   border-radius: 12px;
   font-size: 11px;
   color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 /* Start Page Search Input */
@@ -967,7 +977,34 @@ body.view-landing .landing-page-view {
   inset: 0;
   width: 100%;
   height: 100%;
-  background: #ffffff;
+  background: #070a13;
+}
+
+.mb-webview-loader {
+  position: absolute;
+  inset: 0;
+  background: #070a13;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 10;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.mb-loader-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0, 242, 254, 0.15);
+  border-top-color: #00f2fe;
+  border-radius: 50%;
+  animation: mbSpin 0.75s linear infinite;
+}
+
+@keyframes mbSpin {
+  to { transform: rotate(360deg); }
 }
 
 .mb-webview {

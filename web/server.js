@@ -191,7 +191,7 @@ app.get('/api/proxy', async (req, res) => {
 app.get('/download', (req, res) => {
   res.send(`
     <body style="font-family: sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 60px;">
-      <h1>⚡ ZEDOX Browser Desktop Setup</h1>
+      <h1>ZEDOX Browser Desktop Setup</h1>
       <p style="color: #94a3b8;">Run <code>npm run dist</code> in the <code>desktop/</code> folder to produce your <code>ZEDOX Browser Setup 1.0.0.exe</code>!</p>
     </body>
   `);
