@@ -29,13 +29,21 @@ const TRACKER_PATTERNS = [
 
 // In-Browser Live Privacy Proxy
 app.get('/api/proxy', async (req, res) => {
-  let targetUrl = req.query.url;
-  if (!targetUrl) {
-    return res.status(400).send('Please provide a target URL.');
+  let rawInput = (req.query.url || '').trim();
+  if (!rawInput) {
+    return res.status(400).send('Please provide a target URL or search query.');
   }
 
-  if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-    targetUrl = 'https://' + targetUrl;
+  let targetUrl = rawInput;
+  const isExplicitUrl = targetUrl.startsWith('http://') || targetUrl.startsWith('https://');
+  const hasDomainPattern = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/i.test(targetUrl);
+
+  if (!isExplicitUrl) {
+    if (hasDomainPattern && !targetUrl.includes(' ')) {
+      targetUrl = 'https://' + targetUrl;
+    } else {
+      targetUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(targetUrl);
+    }
   }
 
   try {
@@ -43,7 +51,7 @@ app.get('/api/proxy', async (req, res) => {
 
     const response = await axios.get(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 ZEDOX/1.0',
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 ZEDOX/1.0',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
         'DNT': '1',
         'Sec-GPC': '1'
@@ -60,6 +68,15 @@ app.get('/api/proxy', async (req, res) => {
 
     const $ = cheerio.load(response.data);
     let blockedCount = 0;
+
+    // 0. Remove restrictive frame-busting CSP and X-Frame meta tags
+    $('meta[http-equiv="Content-Security-Policy" i]').remove();
+    $('meta[http-equiv="X-Frame-Options" i]').remove();
+
+    // Ensure responsive mobile viewport
+    if ($('meta[name="viewport"]').length === 0) {
+      $('head').prepend('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">');
+    }
 
     // 1. Remove ad/tracker scripts
     $('script').each((i, el) => {
@@ -93,7 +110,7 @@ app.get('/api/proxy', async (req, res) => {
     // 4. Rewrite absolute and relative links so navigation stays within the proxy
     $('a').each((i, el) => {
       const href = $(el).attr('href');
-      if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+      if (href && !href.startsWith('#') && !href.startsWith('javascript:') && !href.startsWith('mailto:')) {
         try {
           const resolved = new URL(href, parsedTarget.origin).href;
           $(el).attr('href', `/api/proxy?url=${encodeURIComponent(resolved)}`);
@@ -121,32 +138,43 @@ app.get('/api/proxy', async (req, res) => {
       }
     });
 
-    // 6. Inject ZEDOX Floating Status Badge
-    const zedoxBanner = `
-      <div id="zedox-web-demo-bar" style="
-        position: fixed;
-        bottom: 12px;
-        right: 12px;
-        background: #0f172a;
-        color: #f8fafc;
-        border: 1px solid #38bdf8;
-        border-radius: 24px;
-        padding: 8px 16px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        z-index: 2147483647;
-      ">
-        <span style="color: #38bdf8; font-size: 16px;">⚡</span>
-        <span>ZEDOX Shield: <strong>${blockedCount}</strong> trackers blocked • RAM isolation active</span>
-      </div>
-    `;
-    $('body').append(zedoxBanner);
+    // 6. Inject ZEDOX Frame Sync Script
+    const syncScript = `
+      <script>
+      (function() {
+        try {
+          window.parent.postMessage({
+            type: 'ZEDOX_PAGE_LOADED',
+            url: ${JSON.stringify(targetUrl)},
+            title: document.title || ${JSON.stringify(parsedTarget.hostname)},
+            blockedCount: ${blockedCount}
+          }, '*');
+        } catch(e) {}
 
+        document.addEventListener('submit', function(e) {
+          var form = e.target;
+          var method = (form.method || 'GET').toUpperCase();
+          if (method === 'GET') {
+            e.preventDefault();
+            var formData = new FormData(form);
+            var params = new URLSearchParams(formData).toString();
+            var action = form.getAttribute('action') || window.location.href;
+            var target;
+            try {
+              target = new URL(action, ${JSON.stringify(parsedTarget.origin)}).href;
+            } catch(err) {
+              target = action;
+            }
+            var finalUrl = target + (target.indexOf('?') !== -1 ? '&' : '?') + params;
+            window.location.href = '/api/proxy?url=' + encodeURIComponent(finalUrl);
+          }
+        }, true);
+      })();
+      </script>
+    `;
+    $('body').append(syncScript);
+
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.removeHeader('set-cookie');
     res.send($.html());
   } catch (err) {

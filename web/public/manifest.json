@@ -2,7 +2,7 @@
   "name": "ZEDOX Browser",
   "short_name": "ZEDOX",
   "description": "Private, zero-trace, ad-free mobile web browser by Yug Solanki",
-  "start_url": "/?pwa=true",
+  "start_url": "/?mode=browser",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>ZEDOX Browser — The Fast, Private & Ad-Free Web Browser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>ZEDOX Browser — Privacy-First Web Browser</title>
   
   <!-- PWA & Mobile Web App Meta -->
   <link rel="manifest" href="/manifest.json">
@@ -17,204 +17,390 @@
   
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <!-- Header / Navigation -->
-  <header class="navbar">
-    <div class="logo">
-      <img src="assets/logo.png" class="logo-img" alt="ZEDOX Logo">
-      <span>ZEDOX Browser</span>
-    </div>
-    <nav class="nav-links">
-      <a href="#demo">Live Demo</a>
-      <a href="#features">Features</a>
-      <a href="#comparison">Compare</a>
-      <button id="nav-install-btn" class="nav-pwa-btn hidden">Install App</button>
-      <a href="https://github.com/ybsolanki/zedox-browser/releases/download/v1.0.0/ZEDOX.Browser.Setup.1.0.0.exe" class="nav-cta-btn">Download .exe</a>
-    </nav>
-  </header>
+<body class="mode-auto">
 
-  <!-- Mobile PWA Installation Banner (Floats on mobile screens) -->
-  <div id="pwa-install-banner" class="pwa-banner hidden">
-    <div class="pwa-banner-content">
-      <img src="/icons/icon-192.png" alt="ZEDOX Logo" class="pwa-banner-icon">
-      <div class="pwa-banner-text">
-        <strong>Install ZEDOX on Phone</strong>
-        <span>Zero tracking, ad-free mobile browsing</span>
+  <!-- ============================================================== -->
+  <!-- 1. FULLSCREEN MOBILE / WEB BROWSER INTERFACE                  -->
+  <!-- ============================================================== -->
+  <div id="mobile-browser-app" class="mobile-browser-app">
+    
+    <!-- Top Header: Brand, Omnibar, Shield Counter -->
+    <header class="mb-header">
+      <div class="mb-brand" id="mb-btn-brand" title="ZEDOX Start Page">
+        <img src="assets/logo.png" class="mb-logo-img" alt="ZEDOX Logo">
       </div>
-    </div>
-    <div class="pwa-banner-actions">
-      <button id="pwa-install-btn" class="pwa-btn-primary">Install</button>
-      <button id="pwa-close-btn" class="pwa-btn-close">✕</button>
-    </div>
-  </div>
 
-  <!-- iOS Safari Install Tooltip -->
-  <div id="ios-install-tooltip" class="ios-tooltip hidden">
-    <span>To install on iPhone: Tap <strong>Share</strong> <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="display:inline-block; vertical-align:middle;"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"/></svg> then <strong>Add to Home Screen</strong>.</span>
-    <button id="ios-tooltip-close">✕</button>
-  </div>
+      <div class="mb-omnibar-wrapper">
+        <div class="mb-ssl-badge" id="mb-ssl-badge" title="ZEDOX Privacy Shield Active">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="#00f2fe"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        </div>
+        <input type="text" id="mb-url-input" class="mb-url-input" placeholder="Search DuckDuckGo or enter URL..." autocomplete="off" autocapitalize="none" spellcheck="false">
+        <button class="mb-btn-clear hidden" id="mb-btn-clear" title="Clear">✕</button>
+        <button class="mb-btn-go" id="mb-btn-go" title="Browse">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+        </button>
+      </div>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="pill-badge">
-      <span class="pulse-dot"></span> 100% Ephemeral • Zero Disk Footprint
-    </div>
-    <h1 class="hero-title">Experience the Web with <br><span class="gradient-text">ZEDOX Browser</span></h1>
-    <p class="hero-desc">
-      Stop letting websites track your clicks, harvest your cookies, and log your search history.
-      ZEDOX Browser runs in pure RAM with integrated ad, video ad, and tracker blocking. Available on Windows PC & Mobile Phones.
-    </p>
-    <div class="hero-actions">
-      <a href="https://github.com/ybsolanki/zedox-browser/releases/download/v1.0.0/ZEDOX.Browser.Setup.1.0.0.exe" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-        Download for Windows (.exe)
-      </a>
-      <button id="hero-mobile-btn" class="btn btn-mobile-install hidden">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
-        Install Mobile App
+      <button class="mb-shield-badge" id="mb-btn-shield" title="Privacy Shield Status">
+        <span class="mb-shield-icon">⚡</span>
+        <span id="mb-shield-count">0</span>
       </button>
-      <a href="#demo" class="btn btn-secondary">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-        Try Live Web Demo
-      </a>
-    </div>
-  </section>
+    </header>
 
-  <!-- Interactive Live Browser Demo -->
-  <section class="demo-section" id="demo">
-    <div class="section-header">
-      <h2>Interactive Live Web Demo</h2>
-      <p>Test ZEDOX privacy filtering right now in your current browser — no installation required.</p>
-    </div>
+    <!-- Top Loading Bar -->
+    <div class="mb-loading-bar" id="mb-loading-bar"></div>
 
-    <div class="browser-mockup">
-      <div class="mockup-header">
-        <div class="window-dots">
-          <span class="dot red"></span>
-          <span class="dot yellow"></span>
-          <span class="dot green"></span>
+    <!-- Main Viewport Stage -->
+    <main class="mb-stage">
+      
+      <!-- View A: Start Page / Speed Dial (Home) -->
+      <div class="mb-start-page" id="mb-start-page">
+        <div class="mb-start-hero">
+          <img src="assets/logo.png" class="mb-start-logo" alt="ZEDOX Browser">
+          <h1 class="mb-start-title">ZEDOX Browser</h1>
+          <div class="mb-start-badges">
+            <span class="badge-pill">🛡️ Zero Trace</span>
+            <span class="badge-pill">🧠 100% RAM</span>
+            <span class="badge-pill">🚫 Ad Free</span>
+          </div>
         </div>
-        <div class="mockup-url-bar">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="#10b981"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-          <input type="text" id="demo-url-input" value="https://en.wikipedia.org/wiki/Web_browser" placeholder="Enter any URL (e.g. en.wikipedia.org)">
-          <button id="demo-go-btn" class="demo-btn">Browse Privately</button>
+
+        <!-- Quick Search Bar on Start Page -->
+        <div class="mb-start-search">
+          <div class="mb-start-search-icon">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="#94a3b8"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          </div>
+          <input type="text" id="mb-start-search-input" placeholder="Search the web privately..." autocomplete="off">
+          <button id="mb-start-search-btn" class="mb-start-go-btn">Go</button>
         </div>
-        <div class="mockup-shield-pill">
-          <span>⚡ ZEDOX Shield: Active</span>
+
+        <!-- Quick Dial Bookmarks -->
+        <div class="mb-quick-dial">
+          <div class="mb-qd-title">Quick Bookmarks</div>
+          <div class="mb-qd-grid">
+            <button class="mb-qd-item" data-url="https://html.duckduckgo.com/html/">
+              <div class="mb-qd-icon">🦆</div>
+              <span>DuckDuckGo</span>
+            </button>
+            <button class="mb-qd-item" data-url="https://en.wikipedia.org/wiki/Special:Search">
+              <div class="mb-qd-icon">📖</div>
+              <span>Wikipedia</span>
+            </button>
+            <button class="mb-qd-item" data-url="https://news.ycombinator.com">
+              <div class="mb-qd-icon">💻</div>
+              <span>Hacker News</span>
+            </button>
+            <button class="mb-qd-item" data-url="https://old.reddit.com">
+              <div class="mb-qd-icon">🤖</div>
+              <span>Reddit</span>
+            </button>
+            <button class="mb-qd-item" data-url="https://github.com/trending">
+              <div class="mb-qd-icon">🐙</div>
+              <span>GitHub</span>
+            </button>
+            <button class="mb-qd-item" data-url="https://archive.today">
+              <div class="mb-qd-icon">🌐</div>
+              <span>Archive</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Session Isolation Monitor -->
+        <div class="mb-session-box">
+          <div class="mb-session-item">
+            <span class="mb-session-label">History On Disk:</span>
+            <span class="mb-session-val green">0 Bytes (Disabled)</span>
+          </div>
+          <div class="mb-session-item">
+            <span class="mb-session-label">Cookie Lifetime:</span>
+            <span class="mb-session-val green">RAM Only</span>
+          </div>
+          <div class="mb-session-item">
+            <span class="mb-session-label">Ad/Tracker Shield:</span>
+            <span class="mb-session-val cyan">Active</span>
+          </div>
+        </div>
+
+        <div class="mb-creator-credit">
+          Engineered by <strong>Yug Solanki</strong> • Privacy Architecture
         </div>
       </div>
 
-      <div class="demo-suggestions">
-        <span>Try sample sites:</span>
-        <button class="sample-tag" data-url="https://en.wikipedia.org/wiki/Privacy">Wikipedia (Privacy)</button>
-        <button class="sample-tag" data-url="https://example.com">Example.com</button>
-        <button class="sample-tag" data-url="https://news.ycombinator.com">Hacker News</button>
+      <!-- View B: Active Web Viewport Frame -->
+      <div class="mb-webview-wrapper hidden" id="mb-webview-wrapper">
+        <iframe id="mb-webview" class="mb-webview" src="about:blank" frameborder="0"></iframe>
       </div>
 
-      <div class="mockup-viewport">
-        <iframe id="demo-frame" src="/api/proxy?url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWeb_browser" frameborder="0"></iframe>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <footer class="mb-navbar">
+      <button class="mb-nav-btn" id="mb-nav-back" title="Back" disabled>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      </button>
+      
+      <button class="mb-nav-btn" id="mb-nav-forward" title="Forward" disabled>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </button>
+      
+      <button class="mb-nav-btn" id="mb-nav-home" title="Home">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      </button>
+
+      <button class="mb-nav-btn mb-btn-nuke" id="mb-nav-nuke" title="Panic Nuke Session (Instant Erase)">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#f43f5e"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span>Nuke</span>
+      </button>
+      
+      <button class="mb-nav-btn" id="mb-nav-menu" title="Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+    </footer>
+
+    <!-- Shield Status Popover Sheet -->
+    <div class="mb-sheet hidden" id="mb-shield-sheet">
+      <div class="mb-sheet-backdrop" id="mb-shield-backdrop"></div>
+      <div class="mb-sheet-content">
+        <div class="mb-sheet-header">
+          <div class="mb-sheet-title">⚡ ZEDOX Privacy Shield</div>
+          <button class="mb-sheet-close" id="mb-shield-close">✕</button>
+        </div>
+        <div class="mb-sheet-body">
+          <div class="mb-stat-row">
+            <span>Trackers & Ads Stripped</span>
+            <strong id="mb-stat-trackers" class="cyan">0</strong>
+          </div>
+          <div class="mb-stat-row">
+            <span>Search History on Disk</span>
+            <strong class="green">0 Bytes (Disabled)</strong>
+          </div>
+          <div class="mb-stat-row">
+            <span>Persistent Cookies</span>
+            <strong class="green">Blocked (RAM Only)</strong>
+          </div>
+          <div class="mb-stat-row">
+            <span>Referrer Header Leakage</span>
+            <strong class="green">Neutralized</strong>
+          </div>
+          <div class="mb-stat-row">
+            <span>Isolation Sandbox</span>
+            <strong>Active</strong>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- Features Section -->
-  <section class="features-section" id="features">
-    <div class="section-header">
-      <h2>Engineered for Uncompromising Privacy</h2>
-      <p>How ZEDOX Browser keeps your identity and activity completely invisible on Desktop & Mobile.</p>
-    </div>
-
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="card-icon">🚫</div>
-        <h3>Zero History on Disk</h3>
-        <p>Unlike standard browsers that log every search and website visit into local databases, ZEDOX operates entirely in RAM. Nothing touches your drive.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="card-icon">🍪</div>
-        <h3>Ephemeral Memory Cookies</h3>
-        <p>Cookies exist only in RAM while the tab remains open. Close the tab or browser, and all session state is erased forever.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="card-icon">⚡</div>
-        <h3>EasyList Ad Blocking</h3>
-        <p>Pre-packaged with EasyList & EasyPrivacy rules that automatically intercept and block tracking beacons, banners, and video ads before they load.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="card-icon">🛡️</div>
-        <h3>GPC & Anti-Fingerprint</h3>
-        <p>Enforces Global Privacy Control (GPC) and Do Not Track (DNT) headers on every request, keeping your digital footprint untraceable.</p>
+    <!-- Menu Sheet -->
+    <div class="mb-sheet hidden" id="mb-menu-sheet">
+      <div class="mb-sheet-backdrop" id="mb-menu-backdrop"></div>
+      <div class="mb-sheet-content">
+        <div class="mb-sheet-header">
+          <div class="mb-sheet-title">ZEDOX Browser Menu</div>
+          <button class="mb-sheet-close" id="mb-menu-close">✕</button>
+        </div>
+        <div class="mb-menu-list">
+          <button class="mb-menu-item" id="mb-menu-reload">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            <span>Reload Current Page</span>
+          </button>
+          <button class="mb-menu-item" id="mb-menu-copy">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            <span>Copy Page Link</span>
+          </button>
+          <button class="mb-menu-item" id="mb-menu-landing">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+            <span>View Landing Page & Windows PC Download</span>
+          </button>
+          <button class="mb-menu-item" id="mb-menu-about">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <span>About ZEDOX & Creator Yug Solanki</span>
+          </button>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- Comparison Table -->
-  <section class="comparison-section" id="comparison">
-    <div class="section-header">
-      <h2>How ZEDOX Compares</h2>
-      <p>Why standard browsers and normal "Incognito" modes aren't enough.</p>
+    <!-- Panic Nuke Confirmation Toast -->
+    <div class="mb-toast hidden" id="mb-toast">
+      <span>🔥 Session Purged! Pure RAM reset. Zero traces remaining.</span>
     </div>
+  </div>
 
-    <div class="table-container">
-      <table class="comparison-table">
-        <thead>
-          <tr>
-            <th>Feature</th>
-            <th class="highlight-col">ZEDOX Browser</th>
-            <th>Standard Chrome</th>
-            <th>Chrome Incognito</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Automatic Ad & Video Ad Blocking</td>
-            <td class="highlight-col status-yes">✓ Built-in</td>
-            <td class="status-no">✗ None</td>
-            <td class="status-no">✗ None</td>
-          </tr>
-          <tr>
-            <td>Tracker & Analytics Script Blocker</td>
-            <td class="highlight-col status-yes">✓ Built-in</td>
-            <td class="status-no">✗ None</td>
-            <td class="status-no">✗ Partial</td>
-          </tr>
-          <tr>
-            <td>Zero History Ever Written to Disk</td>
-            <td class="highlight-col status-yes">✓ Always Active</td>
-            <td class="status-no">✗ Logs everything</td>
-            <td class="status-yes">✓ Session only</td>
-          </tr>
-          <tr>
-            <td>One-Click Panic Wipe Button</td>
-            <td class="highlight-col status-yes">✓ Instant Nuke</td>
-            <td class="status-no">✗ Manual settings</td>
-            <td class="status-no">✗ None</td>
-          </tr>
-          <tr>
-            <td>Stripped Referrer Headers</td>
-            <td class="highlight-col status-yes">✓ Enabled</td>
-            <td class="status-no">✗ Leaked</td>
-            <td class="status-no">✗ Leaked</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+  <!-- ============================================================== -->
+  <!-- 2. DESKTOP / MARKETING LANDING VIEW                            -->
+  <!-- ============================================================== -->
+  <div id="landing-page-view" class="landing-page-view">
+    
+    <!-- Floating Return to Mobile Browser Button (When viewing landing page on mobile) -->
+    <button id="floating-browser-btn" class="floating-browser-btn hidden" title="Return to Browser">
+      <img src="assets/logo.png" width="18" height="18" alt="Logo">
+      <span>Return to Browser</span>
+    </button>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
+    <!-- Header / Navigation -->
+    <header class="navbar">
       <div class="logo">
         <img src="assets/logo.png" class="logo-img" alt="ZEDOX Logo">
         <span>ZEDOX Browser</span>
       </div>
-      <p>Open source privacy architecture created by <strong>Yug Solanki</strong>. Available for PC & Mobile.</p>
-      <div class="copyright">© 2026 ZEDOX Browser Project • Created by Yug Solanki. Released under MIT License.</div>
+      <nav class="nav-links">
+        <button id="nav-launch-browser-btn" class="nav-browser-btn">🌐 Open Web Browser</button>
+        <a href="#features">Features</a>
+        <a href="#comparison">Compare</a>
+        <button id="nav-install-btn" class="nav-pwa-btn hidden">Install Mobile App</button>
+        <a href="https://github.com/ybsolanki/zedox-browser/releases/download/v1.0.0/ZEDOX.Browser.Setup.1.0.0.exe" class="nav-cta-btn">Download .exe</a>
+      </nav>
+    </header>
+
+    <!-- Mobile PWA Installation Banner (Floats on mobile screens when on landing page) -->
+    <div id="pwa-install-banner" class="pwa-banner hidden">
+      <div class="pwa-banner-content">
+        <img src="/icons/icon-192.png" alt="ZEDOX Logo" class="pwa-banner-icon">
+        <div class="pwa-banner-text">
+          <strong>Install ZEDOX on Phone</strong>
+          <span>Zero tracking, ad-free mobile browsing</span>
+        </div>
+      </div>
+      <div class="pwa-banner-actions">
+        <button id="pwa-install-btn" class="pwa-btn-primary">Install</button>
+        <button id="pwa-close-btn" class="pwa-btn-close">✕</button>
+      </div>
     </div>
-  </footer>
+
+    <!-- iOS Safari Install Tooltip -->
+    <div id="ios-install-tooltip" class="ios-tooltip hidden">
+      <span>To install on iPhone: Tap <strong>Share</strong> <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="display:inline-block; vertical-align:middle;"><path d="M16 5l-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6c-1.11 0-2-.9-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3c1.1 0 2 .89 2 2z"/></svg> then <strong>Add to Home Screen</strong>.</span>
+      <button id="ios-tooltip-close">✕</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="pill-badge">
+        <span class="pulse-dot"></span> 100% Ephemeral • Zero Disk Footprint
+      </div>
+      <h1 class="hero-title">Experience the Web with <br><span class="gradient-text">ZEDOX Browser</span></h1>
+      <p class="hero-desc">
+        Stop letting websites track your clicks, harvest your cookies, and log your search history.
+        ZEDOX Browser runs in pure RAM with integrated ad, video ad, and tracker blocking. Available on Windows PC & Mobile Phones.
+      </p>
+      <div class="hero-actions">
+        <button id="hero-launch-browser-btn" class="btn btn-browser">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          Open Web Browser App
+        </button>
+        <a href="https://github.com/ybsolanki/zedox-browser/releases/download/v1.0.0/ZEDOX.Browser.Setup.1.0.0.exe" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+          Download for Windows (.exe)
+        </a>
+        <button id="hero-mobile-btn" class="btn btn-mobile-install hidden">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+          Install Mobile App
+        </button>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+      <div class="section-header">
+        <h2>Engineered for Uncompromising Privacy</h2>
+        <p>How ZEDOX Browser keeps your identity and activity completely invisible on Desktop & Mobile.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="card-icon">🚫</div>
+          <h3>Zero History on Disk</h3>
+          <p>Unlike standard browsers that log every search and website visit into local databases, ZEDOX operates entirely in RAM. Nothing touches your drive.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🍪</div>
+          <h3>Ephemeral Memory Cookies</h3>
+          <p>Cookies exist only in RAM while the tab remains open. Close the tab or browser, and all session state is erased forever.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">⚡</div>
+          <h3>EasyList Ad Blocking</h3>
+          <p>Pre-packaged with EasyList & EasyPrivacy rules that automatically intercept and block tracking beacons, banners, and video ads before they load.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="card-icon">🛡️</div>
+          <h3>GPC & Anti-Fingerprint</h3>
+          <p>Enforces Global Privacy Control (GPC) and Do Not Track (DNT) headers on every request, keeping your digital footprint untraceable.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="comparison-section" id="comparison">
+      <div class="section-header">
+        <h2>How ZEDOX Compares</h2>
+        <p>Why standard browsers and normal "Incognito" modes aren't enough.</p>
+      </div>
+
+      <div class="table-container">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="highlight-col">ZEDOX Browser</th>
+              <th>Standard Chrome</th>
+              <th>Chrome Incognito</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Automatic Ad & Video Ad Blocking</td>
+              <td class="highlight-col status-yes">✓ Built-in</td>
+              <td class="status-no">✗ None</td>
+              <td class="status-no">✗ None</td>
+            </tr>
+            <tr>
+              <td>Tracker & Analytics Script Blocker</td>
+              <td class="highlight-col status-yes">✓ Built-in</td>
+              <td class="status-no">✗ None</td>
+              <td class="status-no">✗ Partial</td>
+            </tr>
+            <tr>
+              <td>Zero History Ever Written to Disk</td>
+              <td class="highlight-col status-yes">✓ Always Active</td>
+              <td class="status-no">✗ Logs everything</td>
+              <td class="status-yes">✓ Session only</td>
+            </tr>
+            <tr>
+              <td>One-Click Panic Wipe Button</td>
+              <td class="highlight-col status-yes">✓ Instant Nuke</td>
+              <td class="status-no">✗ Manual settings</td>
+              <td class="status-no">✗ None</td>
+            </tr>
+            <tr>
+              <td>Stripped Referrer Headers</td>
+              <td class="highlight-col status-yes">✓ Enabled</td>
+              <td class="status-no">✗ Leaked</td>
+              <td class="status-no">✗ Leaked</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="logo">
+          <img src="assets/logo.png" class="logo-img" alt="ZEDOX Logo">
+          <span>ZEDOX Browser</span>
+        </div>
+        <p>Open source privacy architecture created by <strong>Yug Solanki</strong>. Available for PC & Mobile.</p>
+        <div class="copyright">© 2026 ZEDOX Browser Project • Created by Yug Solanki. Released under MIT License.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="client.js"></script>
+</body>
+</html>
 
   <script src="client.js"></script>
 </body>

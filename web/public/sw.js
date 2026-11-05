@@ -1,10 +1,12 @@
-const CACHE_NAME = 'zedox-pwa-v1';
+const CACHE_NAME = 'zedox-pwa-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/style.css',
   '/client.js',
   '/manifest.json',
+  '/favicon.png',
+  '/assets/logo.png',
   '/icons/icon.svg',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
