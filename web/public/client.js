@@ -170,17 +170,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mbNavForward) mbNavForward.disabled = true;
   }
 
-  // Panic Nuke Session (RAM wipe)
+  // Panic Nuke Session (RAM wipe: strictly only history and cookies, preserves other state)
   function panicNuke() {
     goHome();
     totalBlocked = 0;
     if (mbShieldCount) mbShieldCount.textContent = '0';
     if (mbStatTrackers) mbStatTrackers.textContent = '0';
+    
+    // 1. Wipe in-memory session history
     try {
       sessionStorage.clear();
-      localStorage.clear();
     } catch (e) {}
-    showToast('Session Purged. Pure RAM reset — zero traces remaining.');
+
+    // 2. Wipe ephemeral session cookies without touching localStorage
+    try {
+      document.cookie.split(';').forEach(c => {
+        document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+      });
+      fetch('/api/nuke', { method: 'POST' }).catch(() => {});
+    } catch (e) {}
+
+    showToast('Session Purged. History & cookies wiped — pure RAM reset.');
   }
 
   // Omnibar Input & Buttons

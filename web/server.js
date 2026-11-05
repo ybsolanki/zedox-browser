@@ -27,6 +27,24 @@ const TRACKER_PATTERNS = [
   /adsystem/i
 ];
 
+const POPULAR_SHORTCUTS = {
+  'youtube': 'https://m.youtube.com',
+  'yt': 'https://m.youtube.com',
+  'google': 'https://www.google.com',
+  'wiki': 'https://en.wikipedia.org',
+  'wikipedia': 'https://en.wikipedia.org',
+  'reddit': 'https://old.reddit.com',
+  'github': 'https://github.com',
+  'twitter': 'https://x.com',
+  'x': 'https://x.com',
+  'facebook': 'https://m.facebook.com',
+  'fb': 'https://m.facebook.com',
+  'instagram': 'https://www.instagram.com',
+  'insta': 'https://www.instagram.com',
+  'news': 'https://news.ycombinator.com',
+  'archive': 'https://archive.today'
+};
+
 // In-Browser Live Privacy Proxy
 app.get('/api/proxy', async (req, res) => {
   let rawInput = (req.query.url || '').trim();
@@ -35,14 +53,18 @@ app.get('/api/proxy', async (req, res) => {
   }
 
   let targetUrl = rawInput;
-  const isExplicitUrl = targetUrl.startsWith('http://') || targetUrl.startsWith('https://');
-  const hasDomainPattern = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/i.test(targetUrl);
+  const lowerInput = rawInput.toLowerCase();
 
-  if (!isExplicitUrl) {
+  // 1. Check popular service shortcuts
+  if (POPULAR_SHORTCUTS[lowerInput]) {
+    targetUrl = POPULAR_SHORTCUTS[lowerInput];
+  } else if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+    const hasDomainPattern = /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/.*)?$/i.test(targetUrl);
     if (hasDomainPattern && !targetUrl.includes(' ')) {
       targetUrl = 'https://' + targetUrl;
     } else {
-      targetUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(targetUrl);
+      // Clean, fast web search via Google Web Mode (udm=14)
+      targetUrl = 'https://www.google.com/search?q=' + encodeURIComponent(targetUrl) + '&udm=14';
     }
   }
 
@@ -51,13 +73,15 @@ app.get('/api/proxy', async (req, res) => {
 
     const response = await axios.get(targetUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 ZEDOX/1.0',
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 14; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
         'DNT': '1',
-        'Sec-GPC': '1'
+        'Sec-GPC': '1',
+        'Upgrade-Insecure-Requests': '1'
       },
       responseType: 'text',
-      timeout: 10000,
+      timeout: 25000,
       maxRedirects: 5
     });
 
@@ -179,13 +203,27 @@ app.get('/api/proxy', async (req, res) => {
     res.send($.html());
   } catch (err) {
     res.status(500).send(`
-      <div style="font-family: sans-serif; padding: 40px; text-align: center; background: #0f172a; color: #f8fafc; min-height: 100vh;">
-        <h2 style="color: #f43f5e;">Unable to load page</h2>
-        <p style="color: #94a3b8;">${err.message}</p>
-        <p>Try another URL like <code>en.wikipedia.org</code> or <code>example.com</code>.</p>
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px; text-align: center; background: #070a13; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <div style="width: 50px; height: 50px; border-radius: 12px; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="#f43f5e"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <h2 style="color: #f43f5e; font-size: 20px; margin-bottom: 8px;">Unable to Connect to Site</h2>
+        <p style="color: #94a3b8; font-size: 13px; max-width: 360px; line-height: 1.5; margin-bottom: 24px;">The connection timed out (${err.message}). Choose an option below to proceed:</p>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: 340px;">
+          <a href="/api/proxy?url=${encodeURIComponent(targetUrl)}" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #070a13; padding: 10px 18px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 13px;">Retry</a>
+          <a href="/api/proxy?url=${encodeURIComponent('https://www.google.com/search?q=' + encodeURIComponent(rawInput) + '&udm=14')}" style="background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(0, 242, 254, 0.3); color: #00f2fe; padding: 10px 18px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 600;">Search Web</a>
+          <a href="${targetUrl}" target="_blank" rel="noopener noreferrer" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #cbd5e1; padding: 10px 18px; border-radius: 20px; text-decoration: none; font-size: 13px;">Open Direct</a>
+        </div>
       </div>
     `);
   }
+});
+
+// Panic Nuke: Ephemeral Cookie & RAM Session Erasure
+app.post('/api/nuke', (req, res) => {
+  res.setHeader('Clear-Site-Data', '"cookies"');
+  res.json({ success: true, message: 'Session cookies wiped.' });
 });
 
 app.get('/download', (req, res) => {
