@@ -1,0 +1,10 @@
+{
+  "name": "zedox-browser",
+  "version": "1.0.0",
+  "description": "ZEDOX Browser — Privacy-First Ephemeral Web Browser",
+  "scripts": {
+    "postinstall": "cd web && npm install",
+    "build": "cd web && npm install",
+    "start": "node web/server.js"
+  }
+}
